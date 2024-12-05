@@ -1,6 +1,6 @@
 # Fine-tuning Pixtral
 
-This repository contains a script for training Trnasformers compatible [Pixtral-12b](https://huggingface.co/mistral-community/pixtral-12b).<br<br>
+This repository contains a script for training Trnasformers compatible [Pixtral-12b](https://huggingface.co/mistral-community/pixtral-12b).<br>
 
 However the model only supports **batch size=1**. So it could take a long time to fine tune.
 
