@@ -174,7 +174,7 @@ class PixtralTrainer(Trainer):
                 self._rotate_checkpoints(use_mtime=False, output_dir=run_dir)
 
         else:
-            super(LLamaVTrainer, self)._save_checkpoint(model, trial, metrics)
+            super(PixtralTrainer, self)._save_checkpoint(model, trial, metrics)
 
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
             # If we are executing this function, we are the process zero, so we don't check for that.
