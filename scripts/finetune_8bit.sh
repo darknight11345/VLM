@@ -6,12 +6,12 @@ MODEL_NAME="mistral-community/pixtral-12b"
 
 export PYTHONPATH=src:$PYTHONPATH
 
-accelerate launch --fp8_backend=msamp --fp8_opt_level=O2 src/training/train.py \
-    --deepspeed scripts/zero3.json \
+deepspeed src/training/train.py \
+    --deepspeed scripts/zero3_fp8.json \
     --optim adamw_bnb_8bit \
     --model_id $MODEL_NAME \
-    --data_path /home/workspace/Dataset/vlm/description/traffic_sample.json \
-    --image_folder /home/workspace/Dataset/vlm/images \
+    --data_path /path/to/your/training/data.json \
+    --image_folder /path/to/your/image/folder \
     --disable_flash_attn2 True \
     --lora_enable False \
     --tune_img_projector True \

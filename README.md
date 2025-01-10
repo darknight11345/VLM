@@ -11,10 +11,15 @@ However the model only supports **batch size=1**. So it could take a long time t
 **[[Qwen2-VL Finetuning]](https://github.com/2U1/Qwen2-VL-Finetune)**<br>
 **[[Molmo Finetune]](https://github.com/2U1/Molmo-Finetune)**
 
+## Update
+
+- [2025/01/11] Updated 8-bit training using ms_amp fp8 with opt_level O3.
+
 ## Table of Contents
 
 - [Fine-tuning Pixtral](#fine-tuning-pixtral)
   - [Other projects](#other-projects)
+  - [Update](#update)
   - [Table of Contents](#table-of-contents)
   - [Supported Features](#supported-features)
   - [Installation](#installation)
@@ -22,10 +27,10 @@ However the model only supports **batch size=1**. So it could take a long time t
   - [Dataset Preparation](#dataset-preparation)
   - [Training](#training)
     - [Full Finetuning](#full-finetuning)
+    - [Full Finetuning with 8-bit](#full-finetuning-with-8-bit)
     - [Finetune with LoRA](#finetune-with-lora)
     - [Train with video dataset](#train-with-video-dataset)
       - [Merge LoRA Weights](#merge-lora-weights)
-      - [Image Resolution for performance boost](#image-resolution-for-performance-boost)
       - [Issue for libcudnn error](#issue-for-libcudnn-error)
   - [TODO](#todo)
   - [Known Issues](#known-issues)
@@ -175,7 +180,8 @@ bash scripts/finetune.sh
 bash scripts/finetune_8bit.sh
 ```
 
-This script will finetune the model with 8bit-adamw and fp8 model dtype. If you run out of vram, you could use this.
+This script will finetune the model with fp8 model dtype. If you run out of vram, you could use this.<br>
+You could use fp8 training with offloading togegher.
 
 ### Finetune with LoRA
 
