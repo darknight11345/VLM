@@ -9,7 +9,8 @@ However the model only supports **batch size=1**. So it could take a long time t
 **[[Phi3-Vision Finetuning]](https://github.com/2U1/Phi3-Vision-Finetune)**<br>
 **[[Llama3.2-Vision Finetuning]](https://github.com/2U1/Llama3.2-Vision-Ft)**<br>
 **[[Qwen2-VL Finetuning]](https://github.com/2U1/Qwen2-VL-Finetune)**<br>
-**[[Molmo Finetune]](https://github.com/2U1/Molmo-Finetune)**
+**[[Molmo Finetune]](https://github.com/2U1/Molmo-Finetune)**<br>
+**[[SmolVLM Finetune]](https://github.com/2U1/SmolVLM-Finetune)**
 
 ## Update
 

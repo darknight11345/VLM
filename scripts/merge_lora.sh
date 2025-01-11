@@ -1,6 +1,5 @@
 # #!/bin/bash
 
-# You can use phi3 instead of phi3.5
 MODEL_NAME="mistral-community/pixtral-12b"
 
 export PYTHONPATH=src:$PYTHONPATH
