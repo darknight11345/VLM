@@ -7,7 +7,7 @@ MODEL_NAME="mistral-community/pixtral-12b"
 export PYTHONPATH=src:$PYTHONPATH
 
 deepspeed src/training/train.py \
-    --deepspeed scripts/zero3_fp8.json \
+    --deepspeed scripts/zero2_fp8.json \
     --optim adamw_bnb_8bit \
     --model_id $MODEL_NAME \
     --data_path /path/to/your/training/data.json \
