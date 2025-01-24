@@ -14,6 +14,7 @@ However the model only supports **batch size=1**. So it could take a long time t
 
 ## Update
 
+- [2025/01/24] Fix error in LoRA training.
 - [2025/01/11] Updated 8-bit training using ms_amp fp8 with opt_level O3.
 
 ## Table of Contents

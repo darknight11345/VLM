@@ -3,6 +3,8 @@
 MODEL_NAME="mistral-community/pixtral-12b"
 
 # Pixtral does not support flash-attnetion2 yet.
+# The multi-modal projector isn't included in the lora module, you should set tune_img_projector to True.
+# Also it could be better for setting the lr for img_procjector.
 
 export PYTHONPATH=src:$PYTHONPATH
 
