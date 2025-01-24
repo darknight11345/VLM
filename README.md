@@ -14,6 +14,7 @@ However the model only supports **batch size=1**. So it could take a long time t
 
 ## Update
 
+- [2025/01/24] Add option for using DoRA.
 - [2025/01/24] Fix error in LoRA training.
 - [2025/01/11] Updated 8-bit training using ms_amp fp8 with opt_level O3.
 
@@ -223,6 +224,9 @@ bash scripts/finetune_lora_vision.sh
 - `--fp16` (bool): Option for using fp16.
 - `--min_pixels` (int): Option for minimum input tokens.
 - `--max_pixles` (int): OPtion for maximum maxmimum tokens.
+- `--lora_enable` (bool): Option for enabling LoRA (default: False)
+- `--vision_lora` (bool): Option for including vision_tower to the LoRA module. The `lora_enable` should be `True` to use this option. (default: False)
+- `--use_dora` (bool): Option for using DoRA instead of LoRA. The `lora_enable` should be `True` to use this option. (default: False)
 - `--lora_namespan_exclude` (str): Exclude modules with namespans to add LoRA.
 - `--max_seq_length` (int): Maximum sequence length (default: 32K).
 - `--bits` (int): Quantization bits (default: 16).
