@@ -166,8 +166,6 @@ The script requires a dataset formatted according to the LLaVA specification. Th
 
 ## Training
 
-**Note:** With the mixed-dataset (e.g. some data in a batch have images while some don't) It only supports with zero2.
-
 To run the training script, use the following command:
 
 ### Full Finetuning
@@ -201,7 +199,6 @@ bash scripts/finetune_lora_vision.sh
 ```
 
 **IMPORTANT:** If you want to tune the `embed_token` with LoRA, You need to tune `lm_head` together.
-**Note:** Freezing LLM would only work without LoRA (including vision_model LoRA).
 
 <details>
 <summary>Training arguments</summary>
