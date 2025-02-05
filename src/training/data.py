@@ -128,7 +128,7 @@ class LazySupervisedDataset(Dataset):
                 del inputs
 
             else:
-                prompt_input_ids = processor(text=user_input, return_tensors='pt')['input_ids']
+                prompt_input_ids = processor(text=user_input_text, return_tensors='pt')['input_ids']
 
             response_input_ids = processor(text=gpt_output_text, return_tensors='pt')['input_ids']
 
@@ -157,7 +157,7 @@ class LazySupervisedDataset(Dataset):
 
         data_dict = dict(
             input_ids=input_ids,
-            pixel_values=pixel_values,
+            pixel_values=all_pixel_values,
             attention_mask=attention_mask,
             labels=labels,
         )
