@@ -65,4 +65,15 @@ class DataArguments:
     )
     lazy_preprocess: bool = False
     image_folder: Optional[str] = field(default=None)
+    qa_json_path: str =  field(default=None)
     max_num_frames: int = 10
+    
+    def __post_init__(self):
+        if self.qa_json_path is None:
+            ws_model = os.environ.get("WS_MODEL", "")
+            self.qa_json_path = os.path.join(ws_model, "Dataset", "Training_dataset", "qa_dots.json")
+            
+        if self.image_folder is None:
+            ws_model = os.environ.get("WS_MODEL", "")
+            self.image_folder = os.path.join(ws_model, "Dataset", "Training_dataset", "image_dots")
+    

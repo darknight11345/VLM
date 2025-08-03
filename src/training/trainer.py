@@ -6,7 +6,7 @@ from transformers import Trainer
 from transformers.trainer import (
     is_sagemaker_mp_enabled,
     get_parameter_names,
-    ALL_LAYERNORM_LAYERS,
+   # ALL_LAYERNORM_LAYERS,
     is_peft_available,
     WEIGHTS_NAME,
     TRAINING_ARGS_NAME,
@@ -23,6 +23,8 @@ from transformers.processing_utils import ProcessorMixin
 from transformers.modeling_utils import PreTrainedModel
 from peft import PeftModel
 from training.train_utils import get_peft_state_maybe_zero_3, get_peft_state_non_lora_maybe_zero_3
+from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS  #####tharani added due to error
+
 
 def maybe_zero_3(param, ignore_status=False, name=None):
     from deepspeed import zero
@@ -39,6 +41,8 @@ def maybe_zero_3(param, ignore_status=False, name=None):
     return param
 
 class PixtralTrainer(Trainer):
+
+    print('check inside PixtralTrainer')
 
     def __init__(self, *args, **kwargs):
         super(PixtralTrainer, self).__init__(*args, **kwargs)

@@ -1,5 +1,7 @@
 import os
 import torch
+import deepspeed.runtime.zero.config as ds_zero_cfg #tharani added to fix the checkpoint resume error 
+import deepspeed.runtime.fp16.loss_scaler as ds_loss_scaler #tharani added to fix the checkpoint resume error 
 import transformers
 from peft import LoraConfig, get_peft_model
 import ast
@@ -117,6 +119,7 @@ def train():
         **bnb_model_from_pretrained_args
     )
 
+    
     model_to_configure = model
     configure_llm(model_to_configure, training_args)
     configure_vision_tower(model_to_configure, training_args, compute_dtype, training_args.device)
@@ -187,9 +190,12 @@ def train():
         args=training_args,
         **data_module
     )
+    
+    # allowlist the DeepSpeed enum so torch.load during resume can unpickle it
+    torch.serialization.add_safe_globals([ds_zero_cfg.ZeroStageEnum,ds_loss_scaler.LossScaler,])
 
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
-        trainer.train(resume_from_checkpoint=True)
+        trainer.train(resume_from_checkpoint=True) # tharani changed from true to false due to error
     else:
         trainer.train()
 

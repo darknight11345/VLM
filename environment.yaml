@@ -1,7 +1,10 @@
-name: pixtral
+name: /pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral
 channels:
   - defaults
 dependencies:
+  - packaging=24.0       # <--- Add here
+  - ninja                # For flash-attn build
+  - cmake 
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
   - bzip2=1.0.8=h5eee18b_5
@@ -59,7 +62,7 @@ dependencies:
       - gitpython==3.1.43
       - gmpy2==2.1.2
       - hjson==3.1.0
-      - huggingface-hub==0.23.2
+      #- huggingface-hub==0.23.2
       - idna==3.4
       - intel-openmp==2024.1.0
       - ipykernel==6.29.3
