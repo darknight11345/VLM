@@ -62,7 +62,8 @@ Login to Hugging Face:
     ```
     Create an access token at:
     Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create
-    Paste this token when prompted.
+    Paste this token when prompted.<br>
+
 
 ## Dataset Preparation
 
