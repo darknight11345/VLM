@@ -61,7 +61,7 @@ Login to Hugging Face:
     huggingface-cli login
     ```
     Create an access token at:
-    Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create
+    Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
     Paste this token when prompted.<br>
 
 
