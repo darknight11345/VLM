@@ -4,19 +4,6 @@ This repository contains a script for training Trnasformers compatible [Pixtral-
 
 However the model only supports **batch size=1**. So it could take a long time to fine tune.
 
-## Other projects
-
-**[[Phi3-Vision Finetuning]](https://github.com/2U1/Phi3-Vision-Finetune)**<br>
-**[[Llama3.2-Vision Finetuning]](https://github.com/2U1/Llama3.2-Vision-Ft)**<br>
-**[[Qwen2-VL Finetuning]](https://github.com/2U1/Qwen2-VL-Finetune)**<br>
-**[[Molmo Finetune]](https://github.com/2U1/Molmo-Finetune)**<br>
-**[[SmolVLM Finetune]](https://github.com/2U1/SmolVLM-Finetune)**
-
-## Update
-
-- [2025/01/24] Add option for using DoRA.
-- [2025/01/24] Fix error in LoRA training.
-- [2025/01/11] Updated 8-bit training using ms_amp fp8 with opt_level O3.
 
 ## Table of Contents
 
@@ -59,11 +46,24 @@ Install the required packages using `environment.yaml`.
 
 ```bash
 conda env create -f environment.yaml
+module load devel/miniforge/24.11.0-python-3.12
+source $(conda info --base)/etc/profile.d/conda.sh
 conda activate pixtral
 pip install flash-attn==2.5.8 --no-build-isolation
 ```
 
 **Note:** You should install flash-attn after installing the other packages.
+
+## Model Setup
+We are now ready to download the Pixtral-12B model from Hugging Face.
+**Login to Hugging Face:
+    ```bash
+    huggingface-cli login
+    ```
+    Create an access token at:
+    Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create
+
+Paste this token when prompted.
 
 ## Dataset Preparation
 
