@@ -4,30 +4,6 @@ This repository contains a script for training Trnasformers compatible [Pixtral-
 
 However the model only supports **batch size=1**. So it could take a long time to fine tune.
 
-
-## Table of Contents
-
-- [Fine-tuning Pixtral](#fine-tuning-pixtral)
-  - [Other projects](#other-projects)
-  - [Update](#update)
-  - [Table of Contents](#table-of-contents)
-  - [Supported Features](#supported-features)
-  - [Installation](#installation)
-    - [Using `environment.yaml`](#using-environmentyaml)
-  - [Dataset Preparation](#dataset-preparation)
-  - [Training](#training)
-    - [Full Finetuning](#full-finetuning)
-    - [Full Finetuning with 8-bit](#full-finetuning-with-8-bit)
-    - [Finetune with LoRA](#finetune-with-lora)
-    - [Train with video dataset](#train-with-video-dataset)
-      - [Merge LoRA Weights](#merge-lora-weights)
-      - [Issue for libcudnn error](#issue-for-libcudnn-error)
-  - [TODO](#todo)
-  - [Known Issues](#known-issues)
-  - [License](#license)
-  - [Citation](#citation)
-  - [Acknowledgement](#acknowledgement)
-
 ## Supported Features
 
 - Deepspeed
@@ -55,58 +31,50 @@ pip install flash-attn==2.5.8 --no-build-isolation
 **Note:** You should install flash-attn after installing the other packages.
 
 ## Model Setup
-We are now ready to download the Pixtral-12B model from Hugging Face.
-Login to Hugging Face:
-```bash
-huggingface-cli login
-```
-Create an access token at:
-Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
-Paste this token when prompted.<br>
-
-Download the modeL: <br>
-```bash
-python - <<'PY'
-from huggingface_hub import snapshot_download
-import os
-
-os.environ["HF_HOME"] = os.getenv("WS_MODEL") + "/.hf_cache"
-
-snapshot_download(
-    repo_id="mistralai/Pixtral-12B-2409",
-    allow_patterns=["*.safetensors","*.json","*.model"],
-    local_dir=os.path.join(os.getenv("WS_MODEL"), "pixtral-12b"),
-    local_dir_use_symlinks=False,
-)
-PY
-```
+  - We are now ready to download the Pixtral-12B model from Hugging Face.<br>
+  Login to Hugging Face:
+  ```bash
+  huggingface-cli login
+  ```
+  Create an access token at:<br>
+  Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
+  Paste this token when prompted.<br>
+  
+  Download the modeL: <br>
+  ```bash
+  python - <<'PY'
+  from huggingface_hub import snapshot_download
+  import os
+  
+  os.environ["HF_HOME"] = os.getenv("WS_MODEL") + "/.hf_cache"
+  
+  snapshot_download(
+      repo_id="mistralai/Pixtral-12B-2409",
+      allow_patterns=["*.safetensors","*.json","*.model"],
+      local_dir=os.path.join(os.getenv("WS_MODEL"), "pixtral-12b"),
+      local_dir_use_symlinks=False,
+  )
+  PY
+  ```
 
 ## Code Modifications
 
-Set the path of your base folder (WS_MODEL) where you store the model, scripts, and data.<br>
-
-Update the following files accordingly:<br>
-
-<details>
-<summary>Params.py</summary>
+  - Set the path of your base folder (WS_MODEL) where you store the model, scripts, and data.<br>
+  
+  Update the following files accordingly:<br>
+  
+  Params.py
   ```python
-    qa_json_path = "/path/to/qa.json"
-    image_folder = "/path/to/images"
+      qa_json_path = "/path/to/qa.json"
+      image_folder = "/path/to/images"
   ```
-</details>
+  Finetune_lora_vision.sh
+    - Update training arguments and artifact paths:
+      WS_MODEL → your model base path
+      RESULTS_DIR → where results/logs will be saved
+      deepspeed, model_id, data_path, qa_json_path, image_folder, output_dir
+    - Adjust SLURM parameters (device, partition, timelimit) as needed.
 
-<details>
-<summary>Finetune_lora_vision.sh</summary>
-  Update training arguments and artifact paths:
-    WS_MODEL → your model base path
-    
-    RESULTS_DIR → where results/logs will be saved
-    
-    deepspeed, model_id, data_path, qa_json_path, image_folder, output_dir
-
-  Adjust SLURM parameters (device, partition, timelimit) as needed.
-</details>
-<details>
 <summary>Training arguments</summary>
 
 - `--deepspeed` (str): Path to DeepSpeed config file (default: "scripts/zero2.json").
@@ -150,57 +118,55 @@ Update the following files accordingly:<br>
 
 ## Running Training
 
-To run the training script, use the following command:
-
-### Full Finetuning
-
-```bash
-sbatch Finetune_lora_vision.sh
-```
-Monitor jobs:
-```python
-squeue -u $(whoami) 
-```
-##After training:
-
-  Check checkpoints in output_dir<br>
+  - To run the training script, use the following command
   
-  Logs available at: RESULTS_DIR/slurm_log<br>
+  ```bash
+  sbatch Finetune_lora_vision.sh
+  ```
+  Monitor jobs:
+  ```python
+  squeue -u $(whoami) 
+  ```
+  After training:
   
-  Before inference, merge checkpoint shards into a single .bin file:<br>
-  ```bash
-  python zero_to_fp32.py WS_MODEL/checkpoint-3902 output_dir/
-  ```
-##Inference
-Inference requires a separate environment (to avoid version conflicts).
-1. Create the Environment
-   ```bash
-   conda create -p $WS_MODEL/conda/pixtral_inference
-   conda activate $WS_MODEL/conda/pixtral_inference
-   ```
-2. Install Dependencies
-   ```bash
-   "vllm>=0.6.2" "mistral_common>=1.4.4" pillow tqdm
-   ```
-   Important: Compatible versions are:
-      transformers==4.55.0
-      vllm==0.10.0
+    - Check checkpoints in output_dir<br>
+    
+    Logs available at: RESULTS_DIR/slurm_log<br>
+    
+    - Before inference, merge checkpoint shards into a single .bin file:<br>
+    ```bash
+    python zero_to_fp32.py WS_MODEL/checkpoint-3902 output_dir/
+    ```
+## Inference
+- Inference requires a separate environment (to avoid version conflicts).
+  1. Create the Environment
+     ```bash
+     conda create -p $WS_MODEL/conda/pixtral_inference
+     conda activate $WS_MODEL/conda/pixtral_inference
+     ```
+  2. Install Dependencies
+     ```bash
+     "vllm>=0.6.2" "mistral_common>=1.4.4" pillow tqdm
+     ```
+     Important: Compatible versions are:
+        transformers==4.55.0
+        vllm==0.10.0
+  
+  3. Run Inference pip install 
+     - Update paths (model_path, data_path, output_dir, WS_MODEL, RESULTS_DIR) in inference_dots.sh
+     - Run the inference:
+      ```bash
+      sbatch inference_dots.sh
+      ```
+  
+    - Results will be saved in RESULTS_DIR (recommended: create a subfolder like inference_results).
+    - Output files:
+      - qa_dots_all_images_add_run_0.json
+      - qa_dots_all_images_add_run_1.json
+      - qa_dots_all_images_add_run_2.json
 
-3. Run Inference pip install 
-  Update paths (model_path, data_path, output_dir, WS_MODEL, RESULTS_DIR) in inference_dots.sh
-  Run the inference:
-  ```bash
-  sbatch inference_dots.sh
-  ```
-
- Results will be saved in RESULTS_DIR (recommended: create a subfolder like inference_results).
- Output files:
-  qa_dots_all_images_add_run_0.json
-  qa_dots_all_images_add_run_1.json
-  qa_dots_all_images_add_run_2.json
-
-4.Evaluation
-  Use a separate environment for evaluation:
+## Evaluation
+  - Use a separate environment for evaluation:
   ```bash
   conda create -p $WS_MODEL/conda/pixtral_evaluation python=3.10
   conda activate $WS_MODEL/conda/pixtral_evaluation
@@ -209,11 +175,11 @@ Inference requires a separate environment (to avoid version conflicts).
   ```bash
   python 1_calculate_results.py
   ```
-  Update paths in 1_calculate_results.py:
+  - Update paths in 1_calculate_results.py:
 
-  base_path → where evaluation results are stored
-  
-  output_path → where to save metrics
+    base_path → where evaluation results are stored
+    
+    output_path → where to save metrics
 
 
 With this setup, you can train, infer, and evaluate Pixtral-12B smoothly on any cluster.
