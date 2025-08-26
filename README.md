@@ -56,14 +56,13 @@ pip install flash-attn==2.5.8 --no-build-isolation
 
 ## Model Setup
 We are now ready to download the Pixtral-12B model from Hugging Face.
-**Login to Hugging Face:
+Login to Hugging Face:
     ```bash
     huggingface-cli login
     ```
     Create an access token at:
     Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create
-
-Paste this token when prompted.
+    Paste this token when prompted.
 
 ## Dataset Preparation
 
