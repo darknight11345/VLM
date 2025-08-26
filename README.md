@@ -188,23 +188,10 @@ With this setup, you can train, infer, and evaluate Pixtral-12B smoothly on any 
 
 This project is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file for details.
 
-## Citation
-
-If you find this repository useful in your project, please consider giving a :star: and citing:
-
-```bibtex
-@misc{Pixtral-Finetuning,
-  author = {Yuwon Lee},
-  title = {Pixtral-Finetune},
-  year = {2024},
-  publisher = {GitHub},
-  url = {https://github.com/2U1/Pixtral-Finetune}
-}
-```
-
 ## Acknowledgement
 
 This project is based on
 
 - [LLaVA-NeXT](https://github.com/LLaVA-VL/LLaVA-NeXT): An amazing open-source project of LMM.
 - [Pixtral-12B](https://huggingface.co/mistral-community/pixtral-12b): Transformer compatible version of pixtral-12b
+- [Pixtral-Finetune](https://github.com/2U1/Pixtral-Finetune)
