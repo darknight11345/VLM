@@ -57,86 +57,58 @@ pip install flash-attn==2.5.8 --no-build-isolation
 ## Model Setup
 We are now ready to download the Pixtral-12B model from Hugging Face.
 Login to Hugging Face:
-    ```bash
-    huggingface-cli login
-    ```
-    Create an access token at:
-    Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
-    Paste this token when prompted.<br>
+```bash
+huggingface-cli login
+```
+Create an access token at:
+Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
+Paste this token when prompted.<br>
 
+Download the modeL: <br>
+```bash
+python - <<'PY'
+from huggingface_hub import snapshot_download
+import os
 
-## Dataset Preparation
+os.environ["HF_HOME"] = os.getenv("WS_MODEL") + "/.hf_cache"
 
-The script requires a dataset formatted according to the LLaVA specification. The dataset should be a JSON file where each entry contains information about conversations and images. Ensure that the image paths in the dataset match the provided `--image_folder`.<br>
-
-**When using a multi-image dataset, the image tokens should all be `<image>`, and the image file names should have been in a list.**
-**Please see the example below and follow format your data.**
-
-<details>
-<summary>Example for single image dataset</summary>
-
-```json
-[
-  {
-    "id": "000000033471",
-    "image": "000000033471.jpg",
-    "conversations": [
-      {
-        "from": "human",
-        "value": "<image>\nWhat are the colors of the bus in the image?"
-      },
-      {
-        "from": "gpt",
-        "value": "The bus in the image is white and red."
-      },
-      {
-        "from": "human",
-        "value": "What feature can be seen on the back of the bus?"
-      },
-      {
-        "from": "gpt",
-        "value": "The back of the bus features an advertisement."
-      },
-      {
-        "from": "human",
-        "value": "Is the bus driving down the street or pulled off to the side?"
-      },
-      {
-        "from": "gpt",
-        "value": "The bus is driving down the street, which is crowded with people and other vehicles."
-      }
-    ]
-  }
-  ...
-]
+snapshot_download(
+    repo_id="mistralai/Pixtral-12B-2409",
+    allow_patterns=["*.safetensors","*.json","*.model"],
+    local_dir=os.path.join(os.getenv("WS_MODEL"), "pixtral-12b"),
+    local_dir_use_symlinks=False,
+)
+PY
 ```
 
-</details>
+## Code Modifications
+
+Set the path of your base folder (WS_MODEL) where you store the model, scripts, and data.<br>
+
+Update the following files accordingly:<br>
 
 <details>
-<summary>Example for multi image dataset</summary>
+<summary>Params.py</summary>
+  Set qa_json_path → path to QA JSON
 
-```json
-[
-  {
-    "id": "000000033471",
-    "image": ["000000033471.jpg", "000000033472.jpg"],
-    "conversations": [
-      {
-        "from": "human",
-        "value": "<image>\n<image>\nIs the perspective of the camera differnt?"
-      },
-      {
-        "from": "gpt",
-        "value": "Yes, It the perspective of the camera is different."
-      }
-    ]
-  }
-  ...
-]
-```
-
+  Set image_folder → path to image dataset
 </details>
+
+
+
+<details>
+<summary>Finetune_lora_vision.sh</summary>
+  Update training arguments and artifact paths:
+
+    WS_MODEL
+    
+    RESULTS_DIR (create a results folder inside WS_MODEL)
+    
+    deepspeed, model_id, data_path, image_folder, qa_json_path, output_dir
+
+  Adjust SLURM parameters (device, partition, timelimit) as needed.
+</details>
+
 
 <details>
 <summary>Example for video dataset</summary>
