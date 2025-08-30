@@ -63,12 +63,12 @@ pip install flash-attn==2.5.8 --no-build-isolation
   
   Update the following files accordingly:<br>
   
-  Params.py
+  - Params.py
   ```python
       qa_json_path = "/path/to/qa.json"
       image_folder = "/path/to/images"
   ```
-  Finetune_lora_vision.sh
+  - Finetune_lora_vision.sh
     - Update training arguments and artifact paths:
         1. WS_MODEL → your model base path
         2. RESULTS_DIR → where results/logs will be saved
@@ -118,7 +118,7 @@ pip install flash-attn==2.5.8 --no-build-isolation
 
 ## Running Training
 
-  - To run the training script, use the following command
+- To run the training script, use the following command
   
   ```bash
   sbatch Finetune_lora_vision.sh
@@ -131,12 +131,13 @@ pip install flash-attn==2.5.8 --no-build-isolation
   
     - Check checkpoints in output_dir<br>
     
-    Logs available at: RESULTS_DIR/slurm_log<br>
+    - Logs available at: RESULTS_DIR/slurm_log<br>
     
     - Before inference, merge checkpoint shards into a single .bin file:<br>
     ```bash
     python zero_to_fp32.py WS_MODEL/checkpoint-3902 output_dir/
     ```
+    - Note: Replace "checkpoint-3902" with your latest checkpoint file name.
 ## Inference
 - Inference requires a separate environment (to avoid version conflicts).
   1. Create the Environment
@@ -159,11 +160,11 @@ pip install flash-attn==2.5.8 --no-build-isolation
       sbatch inference_dots.sh
       ```
   
-    - Results will be saved in RESULTS_DIR (recommended: create a subfolder like inference_results).
-    - Output files:
-      - qa_dots_all_images_add_run_0.json
-      - qa_dots_all_images_add_run_1.json
-      - qa_dots_all_images_add_run_2.json
+- Results will be saved in RESULTS_DIR (recommended: create a subfolder like inference_results).
+- Output files:
+  - qa_dots_all_images_add_run_0.json
+  - qa_dots_all_images_add_run_1.json
+  - qa_dots_all_images_add_run_2.json
 
 ## Evaluation
   - Use a separate environment for evaluation:
