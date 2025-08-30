@@ -10,6 +10,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from decord import VideoReader, cpu
 from .constants import *
+import sys
 
 from .params import DataArguments
 
@@ -56,6 +57,7 @@ def get_qa_pairs_from_json(img_file_name: str, qa_json_path: str) -> list[dict]:
     return [{"question": qa["question"], "answer": str(qa["answer"])} for qa in entry["question_answer"]]
     
 class LazySupervisedDataset(Dataset):
+    
     def __init__(self, data_path: list, processor, data_args: DataArguments):
         super().__init__()
         self.processor = processor
@@ -82,7 +84,7 @@ class LazySupervisedDataset(Dataset):
 
         # Get QA
         qa_pairs = get_qa_pairs_from_json(image_file, self.data_args.qa_json_path)
-        print("qa pairs:", qa_pairs)
+        #print("qa pairs:", qa_pairs)
 
         # Create conversation pairs
         conversations = []
@@ -182,6 +184,7 @@ class DataCollatorForSupervisedDataset(object):
         
 
         for example in examples:
+            print("DEBUG: Example keys:", example.keys())
             batch_input_ids.append(example["input_ids"])
             batch_label_ids.append(example["labels"])
             
@@ -234,7 +237,8 @@ class DataCollatorForSupervisedDataset(object):
 
         attention_mask = input_ids != self.pad_token_id
         labels = pad_sequence(batch_label_ids, padding_side='right', padding_value=IGNORE_INDEX)
-        print("batch_pixel_values: ", batch_pixel_values) # tharani added for debugging
+        #print("batch_pixel_values: ", batch_pixel_values) # tharani added for debugging
+        sys.stdout.flush()
         #pixel_values = torch.cat([pv for pv in batch_pixel_values if pv is not None and pv.numel() > 0], dim=0) if any(pv is not None and pv.numel() > 0 for pv in batch_pixel_values) else None
     
         batch_dict = dict(
@@ -279,6 +283,7 @@ class DataCollatorForSupervisedDataset(object):
             "pixel_values": pixel_values,
         })
         '''
+        
         # tharani added for debugging  --- end
 
         return batch_dict
@@ -328,9 +333,10 @@ def make_supervised_data_module(processor, data_args):
     sft_dataset = LazySupervisedDataset(
         data_path=data_args.data_path, processor=processor, data_args=data_args
     )
-    
+    print("Dataset length:", len(sft_dataset))
+    print(processor.tokenizer.pad_token_id)
     data_collator = DataCollatorForSupervisedDataset(pad_token_id=processor.tokenizer.pad_token_id, debug=True)
-
+    print(data_collator)
     return dict(train_dataset=sft_dataset,
                 eval_dataset=None,
                 data_collator=data_collator)

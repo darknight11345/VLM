@@ -1,10 +1,10 @@
 #!/bin/bash
 #!/usr/bin/env bash
-#SBATCH --partition=gpu_h100_il        # GPU-Dev-Queue (H100)
+#SBATCH --partition=gpu_h100       #gpu_h100_il        # GPU-Dev-Queue (H100)
 #SBATCH --gres=gpu:1                    # 1 × H100
-#SBATCH --cpus-per-task=8               # 8 CPU-Kerne
-#SBATCH --mem=64G                       # 64 GB RAM
-#SBATCH -t 02:50:00                     # 20 Min Testlauf
+#SBATCH --cpus-per-task=16               # 8 CPU-Kerne
+#SBATCH --mem=100G                       # 64 GB RAM
+#SBATCH -t 24:00:00                     # 20 Min Testlauf
 #SBATCH -J pixtral_gpu_dev_test_02082025              # Job-Name
 #SBATCH --output=/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/output/slurm_log/pixtral_gpu.%j.out
 
@@ -59,7 +59,7 @@ deepspeed $WS_MODEL/Pixtral-Finetune/src/training/train.py \
     --data_path "$WS_MODEL/Dataset/Training_dataset" \
     --image_folder "$WS_MODEL/Dataset/Training_dataset/image_dots" \
     --qa_json_path "$WS_MODEL/Dataset/Training_dataset/qa_dots.json" \
-    --disable_flash_attn2 True \
+    --disable_flash_attn2 False \
     --tune_img_projector True \
     --freeze_vision_tower True \
     --freeze_llm False \
@@ -67,8 +67,8 @@ deepspeed $WS_MODEL/Pixtral-Finetune/src/training/train.py \
     --output_dir "$WS_MODEL/output" \
     --num_train_epochs 1 \
     --per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 1 \
-    --learning_rate 2e-4 \
+    --gradient_accumulation_steps 32 \
+    --learning_rate 1e-5 \
     --weight_decay 0.1 \
     --warmup_ratio 0.03 \
     --adam_beta2 0.95 \

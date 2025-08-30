@@ -1,0 +1,40 @@
+SLURM GPU devices: 0
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+INFO 08-08 13:50:11 [__init__.py:243] Automatically detected platform cuda.
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/inference_scripts/test_tokenizer.py", line 1, in <module>
+    from vllm import LLM
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/__init__.py", line 12, in <module>
+    from vllm.engine.arg_utils import AsyncEngineArgs, EngineArgs
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/engine/arg_utils.py", line 20, in <module>
+    from vllm.config import (BlockSize, CacheConfig, CacheDType, CompilationConfig,
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/config.py", line 38, in <module>
+    from vllm.transformers_utils.config import (
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/config.py", line 31, in <module>
+    from vllm.transformers_utils.configs import (ChatGLMConfig, Cohere2Config,
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/configs/__init__.py", line 26, in <module>
+    from vllm.transformers_utils.configs.ovis import OvisConfig
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/configs/ovis.py", line 75, in <module>
+    AutoConfig.register("aimv2", AIMv2Config)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 1312, in register
+    CONFIG_MAPPING.register(model_type, config, exist_ok=exist_ok)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 999, in register
+    raise ValueError(f"'{key}' is already used by a Transformers config, pick another name.")
+ValueError: 'aimv2' is already used by a Transformers config, pick another name.
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc3n082
+Job ID: 1094917
+Cluster: uc3
+User/Group: ul_swv79/ul_student
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 00:00:09
+CPU Efficiency: 1.81% of 00:08:16 core-walltime
+Job Wall-clock time: 00:01:02
+Memory Utilized: 430.81 MB
+Memory Efficiency: 0.66% of 64.00 GB (64.00 GB/node)

@@ -1,0 +1,44 @@
+SLURM GPU devices: 0
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+INFO 08-08 15:26:01 [__init__.py:243] Automatically detected platform cuda.
+INFO 08-08 15:26:04 [__init__.py:31] Available plugins for group vllm.general_plugins:
+INFO 08-08 15:26:04 [__init__.py:33] - lora_filesystem_resolver -> vllm.plugins.lora_resolvers.filesystem_resolver:register_filesystem_resolver
+INFO 08-08 15:26:04 [__init__.py:36] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/inference_scripts/all_experiments_mistral.py", line 318, in <module>
+    llm = LLM(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/utils.py", line 1183, in inner
+    return fn(*args, **kwargs)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/entrypoints/llm.py", line 253, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/engine/llm_engine.py", line 494, in from_engine_args
+    vllm_config = engine_args.create_engine_config(usage_context)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/engine/arg_utils.py", line 983, in create_engine_config
+    model_config = self.create_model_config()
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/engine/arg_utils.py", line 875, in create_model_config
+    return ModelConfig(
+  File "<string>", line 42, in __init__
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/config.py", line 495, in __post_init__
+    self.maybe_pull_model_tokenizer_for_s3(self.model, self.tokenizer)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/config.py", line 626, in maybe_pull_model_tokenizer_for_s3
+    if not (is_s3(model) or is_s3(tokenizer)):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/utils.py", line 16, in is_s3
+    return model_or_path.lower().startswith('s3://')
+TypeError: 'bool' object is not callable
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc3n082
+Job ID: 1095194
+Cluster: uc3
+User/Group: ul_swv79/ul_student
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 00:00:09
+CPU Efficiency: 3.52% of 00:04:16 core-walltime
+Job Wall-clock time: 00:00:32
+Memory Utilized: 464.80 MB
+Memory Efficiency: 0.71% of 64.00 GB (64.00 GB/node)

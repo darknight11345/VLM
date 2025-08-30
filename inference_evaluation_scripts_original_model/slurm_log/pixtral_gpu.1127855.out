@@ -1,0 +1,20 @@
+SLURM GPU devices: 0
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/inference_evaluation_scripts_original_model/all_experiments_mistral.py", line 53, in <module>
+    from vllm import LLM
+ModuleNotFoundError: No module named 'vllm'
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n913
+Job ID: 1127855
+Cluster: uc3
+User/Group: ul_swv79/ul_student
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 00:00:02
+CPU Efficiency: 1.25% of 00:02:40 core-walltime
+Job Wall-clock time: 00:00:20
+Memory Utilized: 52.03 MB
+Memory Efficiency: 0.08% of 64.00 GB (64.00 GB/node)

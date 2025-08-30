@@ -1,0 +1,74 @@
+SLURM GPU devices: 0
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+INFO 08-08 15:35:18 [__init__.py:243] Automatically detected platform cuda.
+INFO 08-08 15:35:21 [__init__.py:31] Available plugins for group vllm.general_plugins:
+INFO 08-08 15:35:21 [__init__.py:33] - lora_filesystem_resolver -> vllm.plugins.lora_resolvers.filesystem_resolver:register_filesystem_resolver
+INFO 08-08 15:35:21 [__init__.py:36] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 08-08 15:35:38 [config.py:793] This model supports multiple tasks: {'reward', 'embed', 'generate', 'classify', 'score'}. Defaulting to 'generate'.
+INFO 08-08 15:35:39 [config.py:2118] Chunked prefill is enabled with max_num_batched_tokens=16384.
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/utils/hub.py", line 470, in cached_files
+    hf_hub_download(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/pfs/work9/workspace/scratch/ul_swv79-pixtral/pixtral-12b/tokenizer.json'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/inference_scripts/all_experiments_mistral.py", line 318, in <module>
+    llm = LLM(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/utils.py", line 1183, in inner
+    return fn(*args, **kwargs)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/entrypoints/llm.py", line 253, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/engine/llm_engine.py", line 501, in from_engine_args
+    return engine_cls.from_vllm_config(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/v1/engine/llm_engine.py", line 123, in from_vllm_config
+    return cls(vllm_config=vllm_config,
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/v1/engine/llm_engine.py", line 85, in __init__
+    self.tokenizer = init_tokenizer_from_configs(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer_group.py", line 110, in init_tokenizer_from_configs
+    return TokenizerGroup(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer_group.py", line 23, in __init__
+    self.tokenizer = get_tokenizer(self.tokenizer_id, **tokenizer_config)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer.py", line 252, in get_tokenizer
+    raise e
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer.py", line 231, in get_tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 983, in from_pretrained
+    tokenizer_config = get_tokenizer_config(pretrained_model_name_or_path, **kwargs)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 815, in get_tokenizer_config
+    resolved_config_file = cached_file(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/utils/hub.py", line 312, in cached_file
+    file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/utils/hub.py", line 522, in cached_files
+    resolved_files = [
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/utils/hub.py", line 523, in <listcomp>
+    _get_cache_file_to_return(path_or_repo_id, filename, cache_dir, revision) for filename in full_filenames
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/transformers/utils/hub.py", line 140, in _get_cache_file_to_return
+    resolved_file = try_to_load_from_cache(path_or_repo_id, full_filename, cache_dir=cache_dir, revision=revision)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_inference/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/pfs/work9/workspace/scratch/ul_swv79-pixtral/pixtral-12b/tokenizer.json'. Use `repo_type` argument if needed.
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc3n082
+Job ID: 1095208
+Cluster: uc3
+User/Group: ul_swv79/ul_student
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 00:00:20
+CPU Efficiency: 4.90% of 00:06:48 core-walltime
+Job Wall-clock time: 00:00:51
+Memory Utilized: 879.80 MB
+Memory Efficiency: 1.34% of 64.00 GB (64.00 GB/node)

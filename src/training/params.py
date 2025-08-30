@@ -9,7 +9,7 @@ from transformers import TrainingArguments
 class ModelArguments:
     model_id: Optional[str] = field(default="mistral-community/pixtral-12b")
 
-
+#131072,
 @dataclass
 class TrainingArguments(TrainingArguments):
     cache_dir: Optional[str] = field(default=None)
@@ -24,7 +24,7 @@ class TrainingArguments(TrainingArguments):
     disable_flash_attn2: bool = field(default=True)
 
     max_seq_length: int = field(
-        default=131072,
+        default=131072, 
         metadata={
             "help":
                 "Maximum sequence length. Sequences will be right padded (and possibly truncated)."

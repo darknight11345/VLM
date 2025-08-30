@@ -4,6 +4,43 @@ This repository contains a script for training Trnasformers compatible [Pixtral-
 
 However the model only supports **batch size=1**. So it could take a long time to fine tune.
 
+## Other projects
+
+**[[Phi3-Vision Finetuning]](https://github.com/2U1/Phi3-Vision-Finetune)**<br>
+**[[Llama3.2-Vision Finetuning]](https://github.com/2U1/Llama3.2-Vision-Ft)**<br>
+**[[Qwen2-VL Finetuning]](https://github.com/2U1/Qwen2-VL-Finetune)**<br>
+**[[Molmo Finetune]](https://github.com/2U1/Molmo-Finetune)**<br>
+**[[SmolVLM Finetune]](https://github.com/2U1/SmolVLM-Finetune)**
+
+## Update
+
+- [2025/01/24] Add option for using DoRA.
+- [2025/01/24] Fix error in LoRA training.
+- [2025/01/11] Updated 8-bit training using ms_amp fp8 with opt_level O3.
+
+## Table of Contents
+
+- [Fine-tuning Pixtral](#fine-tuning-pixtral)
+  - [Other projects](#other-projects)
+  - [Update](#update)
+  - [Table of Contents](#table-of-contents)
+  - [Supported Features](#supported-features)
+  - [Installation](#installation)
+    - [Using `environment.yaml`](#using-environmentyaml)
+  - [Dataset Preparation](#dataset-preparation)
+  - [Training](#training)
+    - [Full Finetuning](#full-finetuning)
+    - [Full Finetuning with 8-bit](#full-finetuning-with-8-bit)
+    - [Finetune with LoRA](#finetune-with-lora)
+    - [Train with video dataset](#train-with-video-dataset)
+      - [Merge LoRA Weights](#merge-lora-weights)
+      - [Issue for libcudnn error](#issue-for-libcudnn-error)
+  - [TODO](#todo)
+  - [Known Issues](#known-issues)
+  - [License](#license)
+  - [Citation](#citation)
+  - [Acknowledgement](#acknowledgement)
+
 ## Supported Features
 
 - Deepspeed
@@ -22,59 +59,149 @@ Install the required packages using `environment.yaml`.
 
 ```bash
 conda env create -f environment.yaml
-module load devel/miniforge/24.11.0-python-3.12
-source $(conda info --base)/etc/profile.d/conda.sh
 conda activate pixtral
 pip install flash-attn==2.5.8 --no-build-isolation
 ```
 
 **Note:** You should install flash-attn after installing the other packages.
 
-## Model Setup
-  - We are now ready to download the Pixtral-12B model from Hugging Face.<br>
-  Login to Hugging Face:
-  ```bash
-  huggingface-cli login
-  ```
-  Create an access token at:<br>
-  Hugging Face Profile → Access Tokens → Create New Token → [Read Permission] → Create <br>
-  Paste this token when prompted.<br>
-  
-  Download the modeL: <br>
-  ```bash
-  python - <<'PY'
-  from huggingface_hub import snapshot_download
-  import os
-  
-  os.environ["HF_HOME"] = os.getenv("WS_MODEL") + "/.hf_cache"
-  
-  snapshot_download(
-      repo_id="mistralai/Pixtral-12B-2409",
-      allow_patterns=["*.safetensors","*.json","*.model"],
-      local_dir=os.path.join(os.getenv("WS_MODEL"), "pixtral-12b"),
-      local_dir_use_symlinks=False,
-  )
-  PY
-  ```
+## Dataset Preparation
 
-## Code Modifications
+The script requires a dataset formatted according to the LLaVA specification. The dataset should be a JSON file where each entry contains information about conversations and images. Ensure that the image paths in the dataset match the provided `--image_folder`.<br>
 
-  - Set the path of your base folder (WS_MODEL) where you store the model, scripts, and data.<br>
-  
-  Update the following files accordingly:<br>
-  
-  - Params.py
-  ```python
-      qa_json_path = "/path/to/qa.json"
-      image_folder = "/path/to/images"
-  ```
-  - Finetune_lora_vision.sh
-    - Update training arguments and artifact paths:
-        1. WS_MODEL → your model base path
-        2. RESULTS_DIR → where results/logs will be saved
-        3. deepspeed, model_id, data_path, qa_json_path, image_folder, output_dir
-    - Adjust SLURM parameters (device, partition, timelimit) as needed.
+**When using a multi-image dataset, the image tokens should all be `<image>`, and the image file names should have been in a list.**
+**Please see the example below and follow format your data.**
 
+<details>
+<summary>Example for single image dataset</summary>
+
+```json
+[
+  {
+    "id": "000000033471",
+    "image": "000000033471.jpg",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "<image>\nWhat are the colors of the bus in the image?"
+      },
+      {
+        "from": "gpt",
+        "value": "The bus in the image is white and red."
+      },
+      {
+        "from": "human",
+        "value": "What feature can be seen on the back of the bus?"
+      },
+      {
+        "from": "gpt",
+        "value": "The back of the bus features an advertisement."
+      },
+      {
+        "from": "human",
+        "value": "Is the bus driving down the street or pulled off to the side?"
+      },
+      {
+        "from": "gpt",
+        "value": "The bus is driving down the street, which is crowded with people and other vehicles."
+      }
+    ]
+  }
+  ...
+]
+```
+
+</details>
+
+<details>
+<summary>Example for multi image dataset</summary>
+
+```json
+[
+  {
+    "id": "000000033471",
+    "image": ["000000033471.jpg", "000000033472.jpg"],
+    "conversations": [
+      {
+        "from": "human",
+        "value": "<image>\n<image>\nIs the perspective of the camera differnt?"
+      },
+      {
+        "from": "gpt",
+        "value": "Yes, It the perspective of the camera is different."
+      }
+    ]
+  }
+  ...
+]
+```
+
+</details>
+
+<details>
+<summary>Example for video dataset</summary>
+
+```json
+[
+  {
+    "id": "sample1",
+    "video": "sample1.mp4",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "<video>\nWhat is going on in this video?"
+      },
+      {
+        "from": "gpt",
+        "value": "A man is walking down the road."
+      }
+    ]
+  }
+  ...
+]
+```
+
+**Note:** Officially pixtral dosen't support the video, but it supports multi-image so you could just use the video as a sequential of frames.
+
+</details>
+
+## Training
+
+To run the training script, use the following command:
+
+### Full Finetuning
+
+```bash
+bash scripts/finetune.sh
+```
+
+### Full Finetuning with 8-bit
+
+```bash
+bash scripts/finetune_8bit.sh
+```
+
+**You need to install [ms-amp](https://github.com/Azure/MS-AMP) to use this script.**<br>
+This script will finetune the model with fp8 model dtype. If you run out of vram, you could use this.<br>
+You could use fp8 training with offloading togegher.
+
+### Finetune with LoRA
+
+If you want to train only the language model with LoRA and perform full training for the vision model:
+
+```bash
+bash scripts/finetune_lora.sh
+```
+
+If you want to train both the language model and the vision model with LoRA:
+
+```bash
+bash scripts/finetune_lora_vision.sh
+```
+
+**IMPORTANT:** If you want to tune the `embed_token` with LoRA, You need to tune `lm_head` together.
+
+<details>
 <summary>Training arguments</summary>
 
 - `--deepspeed` (str): Path to DeepSpeed config file (default: "scripts/zero2.json").
@@ -116,78 +243,60 @@ pip install flash-attn==2.5.8 --no-build-isolation
 
 </details>
 
-## Running Training
+### Train with video dataset
 
-- To run the training script, use the following command
-  
-  ```bash
-  sbatch Finetune_lora_vision.sh
-  ```
-  Monitor jobs:
-  ```python
-  squeue -u $(whoami) 
-  ```
-  After training:
-  
-    - Check checkpoints in output_dir<br>
-    
-    - Logs available at: RESULTS_DIR/slurm_log<br>
-    
-    - Before inference, merge checkpoint shards into a single .bin file:<br>
-    ```bash
-    python zero_to_fp32.py WS_MODEL/checkpoint-3902 output_dir/
-    ```
-    - Note: Replace "checkpoint-3902" with your latest checkpoint file name.
-## Inference
-- Inference requires a separate environment (to avoid version conflicts).
-  1. Create the Environment
-     ```bash
-     conda create -p $WS_MODEL/conda/pixtral_inference
-     conda activate $WS_MODEL/conda/pixtral_inference
-     ```
-  2. Install Dependencies
-     ```bash
-     "vllm>=0.6.2" "mistral_common>=1.4.4" pillow tqdm
-     ```
-     Important: Compatible versions are:
-        transformers==4.55.0
-        vllm==0.10.0
-  
-  3. Run Inference pip install 
-     - Update paths (model_path, data_path, output_dir, WS_MODEL, RESULTS_DIR) in inference_dots.sh
-     - Run the inference:
-      ```bash
-      sbatch inference_dots.sh
-      ```
-  
-- Results will be saved in RESULTS_DIR (recommended: create a subfolder like inference_results).
-- Output files:
-  - qa_dots_all_images_add_run_0.json
-  - qa_dots_all_images_add_run_1.json
-  - qa_dots_all_images_add_run_2.json
+You can train the model using a video dataset. However, officially pixtral dosen't support video. So this code processes videos as a sequence of images, so you’ll need to select specific frames and treat them as multiple images for training. You can set LoRA configs and use for LoRA too.
 
-## Evaluation
-  - Use a separate environment for evaluation:
-  ```bash
-  conda create -p $WS_MODEL/conda/pixtral_evaluation python=3.10
-  conda activate $WS_MODEL/conda/pixtral_evaluation
-  ```
-  Run the evaluation:
-  ```bash
-  python 1_calculate_results.py
-  ```
-  - Update paths in 1_calculate_results.py:
+```bash
+bash scripts/finetune_video.sh
+```
 
-    base_path → where evaluation results are stored
-    
-    output_path → where to save metrics
+**Note**: You should adjust max_num_frames based on the available VRAM.
 
+If you run out of vram, you can use [zero3_offload](./scripts/zero3_offload.json) instead of [zero3](./scripts/zero3_offload.json). However, using zero3 is preferred.
 
-With this setup, you can train, infer, and evaluate Pixtral-12B smoothly on any cluster.
+#### Merge LoRA Weights
+
+```
+bash scripts/merge_lora.sh
+```
+
+**Note:** Remember to replace the paths in `finetune.sh` or `finetune_lora.sh` with your specific paths. (Also in `merge_lora.sh` when using LoRA.)
+
+#### Issue for libcudnn error
+
+```
+Could not load library libcudnn_cnn_train.so.8. Error: /usr/local/cuda-12.1/lib/libcudnn_cnn_train.so.8: undefined symbol: _ZN5cudnn3cnn34layerNormFwd_execute_internal_implERKNS_7backend11VariantPackEP11CUstream_stRNS0_18LayerNormFwdParamsERKNS1_20NormForwardOperationEmb, version libcudnn_cnn_infer.so.8
+```
+
+You could run `unset LD_LIBRARY_PATH` for this error.
+You could see this [issue](https://github.com/andimarafioti/florence2-finetuning/issues/2)
+
+## TODO
+
+- [ ] Support batch size > 1
+
+## Known Issues
+
+- [libcudnn issue](#issue-for-libcudnn-error)
 
 ## License
 
 This project is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file for details.
+
+## Citation
+
+If you find this repository useful in your project, please consider giving a :star: and citing:
+
+```bibtex
+@misc{Pixtral-Finetuning,
+  author = {Yuwon Lee},
+  title = {Pixtral-Finetune},
+  year = {2024},
+  publisher = {GitHub},
+  url = {https://github.com/2U1/Pixtral-Finetune}
+}
+```
 
 ## Acknowledgement
 
@@ -195,4 +304,3 @@ This project is based on
 
 - [LLaVA-NeXT](https://github.com/LLaVA-VL/LLaVA-NeXT): An amazing open-source project of LMM.
 - [Pixtral-12B](https://huggingface.co/mistral-community/pixtral-12b): Transformer compatible version of pixtral-12b
-- [Pixtral-Finetune](https://github.com/2U1/Pixtral-Finetune)

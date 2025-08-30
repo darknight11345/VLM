@@ -46,7 +46,32 @@ class PixtralTrainer(Trainer):
 
     def __init__(self, *args, **kwargs):
         super(PixtralTrainer, self).__init__(*args, **kwargs)
+    
+    '''# tharani added for debugging start
+    def training_step(self, model, inputs, num_items_in_batch=None):
+        # Move inputs to device
+        inputs = self._prepare_inputs(inputs)
 
+        # Print once in the first few steps
+        if self.state.global_step < 5:
+            print("\n[DEBUG] Keys in inputs:", list(inputs.keys()))
+            if "labels" in inputs:
+                print("[DEBUG] Labels shape:", inputs["labels"].shape)
+                print("[DEBUG] Labels sample:", inputs["labels"][0][:20])  # first row, first 20 tokens
+            else:
+                print("[DEBUG] No labels found in batch!")
+
+        # Forward pass
+        outputs = model(**inputs)
+        loss = outputs.loss if hasattr(outputs, "loss") else None
+
+        if self.state.global_step < 5:
+            print("[DEBUG] Loss:", loss.item() if loss is not None else "None")
+
+        return loss
+        
+    # tharani added for debugging end '''
+    
     def create_optimizer(self):
         """
         Setup the optimizer.

@@ -1,0 +1,46 @@
+SLURM GPU devices: 0
+INFO 08-14 21:11:46 [__init__.py:235] Automatically detected platform cuda.
+ERROR 08-14 21:12:33 [config.py:133] Error retrieving safetensors: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/pfs/work9/workspace/scratch/ul_swv79-pixtral/pixtral-12b_original_model/'. Use `repo_type` argument if needed., retrying 1 of 2
+ERROR 08-14 21:12:35 [config.py:131] Error retrieving safetensors: Repo id must be in the form 'repo_name' or 'namespace/repo_name': '/pfs/work9/workspace/scratch/ul_swv79-pixtral/pixtral-12b_original_model/'. Use `repo_type` argument if needed.
+INFO 08-14 21:12:35 [config.py:3440] Downcasting torch.float32 to torch.bfloat16.
+INFO 08-14 21:12:35 [config.py:1604] Using max model len 32000
+INFO 08-14 21:12:42 [config.py:2434] Chunked prefill is enabled with max_num_batched_tokens=8192.
+Traceback (most recent call last):
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/inference_evaluation_scripts_original_model/all_experiments_mistral.py", line 318, in <module>
+    llm = LLM(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/entrypoints/llm.py", line 273, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/engine/llm_engine.py", line 497, in from_engine_args
+    return engine_cls.from_vllm_config(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/v1/engine/llm_engine.py", line 126, in from_vllm_config
+    return cls(vllm_config=vllm_config,
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/v1/engine/llm_engine.py", line 88, in __init__
+    self.tokenizer = init_tokenizer_from_configs(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer_group.py", line 111, in init_tokenizer_from_configs
+    return TokenizerGroup(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer_group.py", line 24, in __init__
+    self.tokenizer = get_tokenizer(self.tokenizer_id, **tokenizer_config)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer.py", line 259, in get_tokenizer
+    raise e
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/vllm/transformers_utils/tokenizer.py", line 238, in get_tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/transformers/models/auto/tokenization_auto.py", line 1135, in from_pretrained
+    return tokenizer_class_fast.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+  File "/pfs/work9/workspace/scratch/ul_swv79-pixtral/conda/pixtral_orginal_model/lib/python3.10/site-packages/transformers/tokenization_mistral_common.py", line 1762, in from_pretrained
+    raise ValueError(
+ValueError: Kwargs ['max_loras', '_from_auto'] are not supported by `MistralCommonTokenizer.from_pretrained`.
+
+============================= JOB FEEDBACK =============================
+
+NodeName=uc2n902
+Job ID: 1127918
+Cluster: uc3
+User/Group: ul_swv79/ul_student
+State: FAILED (exit code 1)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 00:00:17
+CPU Efficiency: 1.29% of 00:22:00 core-walltime
+Job Wall-clock time: 00:02:45
+Memory Utilized: 802.83 MB
+Memory Efficiency: 1.23% of 64.00 GB (64.00 GB/node)

@@ -193,11 +193,20 @@ def train():
     
     # allowlist the DeepSpeed enum so torch.load during resume can unpickle it
     torch.serialization.add_safe_globals([ds_zero_cfg.ZeroStageEnum,ds_loss_scaler.LossScaler,])
+    
+    # ✅ Debug checks before training starts
+    print("Train dataset length:", len(data_module["train_dataset"]))
+    
+    print("Training args:", training_args)
+    print("Checkpoint path exists:", list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")))
+    
+    
 
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
-        trainer.train(resume_from_checkpoint=True) # tharani changed from true to false due to error
+        trainer.train(resume_from_checkpoint=False) # tharani changed from true to false due to error
     else:
         trainer.train()
+        print("inside the trainer.train()")
 
     trainer.save_state()
 
