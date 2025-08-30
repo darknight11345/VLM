@@ -70,9 +70,9 @@ pip install flash-attn==2.5.8 --no-build-isolation
   ```
   Finetune_lora_vision.sh
     - Update training arguments and artifact paths:
-      WS_MODEL → your model base path
-      RESULTS_DIR → where results/logs will be saved
-      deepspeed, model_id, data_path, qa_json_path, image_folder, output_dir
+        WS_MODEL → your model base path
+        RESULTS_DIR → where results/logs will be saved
+        deepspeed, model_id, data_path, qa_json_path, image_folder, output_dir
     - Adjust SLURM parameters (device, partition, timelimit) as needed.
 
 <summary>Training arguments</summary>
