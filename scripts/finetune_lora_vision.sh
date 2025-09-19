@@ -8,8 +8,6 @@
 #SBATCH -J pixtral_gpu_dev_test_02082025              # Job-Name
 #SBATCH --output=/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/output/slurm_log/pixtral_gpu.%j.out
 
-#MODEL_NAME="mistral-community/pixtral-12b"
-#export WS_MODEL=$(ws_find pixtral) for testing
 export WS_MODEL="/pfs/work9/workspace/scratch/ul_swv79-pixtral"
 export RESULTS_DIR="$WS_MODEL/Pixtral-Finetune/output"
 mkdir -p "$RESULTS_DIR/slurm_log"
@@ -33,9 +31,6 @@ print("CUDA available:", torch.cuda.is_available())
 PY
  
 
-#IMAGE_FOLDER = "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Dataset/Training_dataset/image_dots/"
-#QA = "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Dataset/Training_dataset/qa_dots.json/"
-#Train.py = "/pfs/work9/workspace/scratch/ul_swv79-pixtral/Pixtral-Finetune/src/training/train.py"
 
 # Pixtral does not support flash-attnetion2 yet.
 # The multi-modal projector isn't included in the lora module, you should set tune_img_projector to True.
@@ -43,7 +38,7 @@ PY
 
 export PYTHONPATH=$WS_MODEL/Pixtral-Finetune/src${PYTHONPATH:+:$PYTHONPATH}
 
-#### tharani changed per_device_train_batch_size value to 1 from 2 
+
 
 deepspeed $WS_MODEL/Pixtral-Finetune/src/training/train.py \
     --lora_enable True \
